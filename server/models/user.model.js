@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,7 +32,7 @@ const userSchema = new mongoose.Schema(
     },
     picture: {
       type: String,
-      //default: ,
+      default: "./uploads/profil/random-user.png",
     },
     isCandidate: {
       type: Boolean,
@@ -44,6 +45,15 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// play function before save into db
+userSchema.pre("save", async function (next) {
+  const saltPassword = await bcrypt.genSalt();
+  const saltEmail = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, saltPassword);
+  this.email = await bcrypt.hash(this.email, saltEmail);
+  next;
+});
 
 const UserModel = mongoose.model("user", userSchema);
 module.exports = UserModel;
