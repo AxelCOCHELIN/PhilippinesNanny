@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
+const { isBoolean } = require("validator");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
@@ -35,10 +36,9 @@ const userSchema = new mongoose.Schema(
       default: "./uploads/profil/random-user.png",
     },
     isCandidate: {
-      type: Boolean,
-    },
-    isEmployer: {
-      type: Boolean,
+      type: String,
+      required: true,
+      validate: [isBoolean],
     },
   },
   {
